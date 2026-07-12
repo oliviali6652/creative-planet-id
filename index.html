@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>创意星球 · 创新身份卡解锁</title>
+<style>
+  :root {
+    --bg-deep: #060918;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-deep);
+    color: #fff;
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .app {
+    width: 100%; max-width: 420px;
+    height: 100vh; height: 100dvh;
+    position: relative; overflow: hidden;
+  }
+
+  /* ===== Canvas Background ===== */
+  #starCanvas {
+    position: absolute; inset:0; z-index:0; pointer-events:none;
+  }
+
+  /* ===== Screens ===== */
+  .screen {
+    position: absolute; inset:0; z-index:1;
+    display: flex; flex-direction: column;
+    padding: 44px 24px 48px;
+    opacity:0; pointer-events:none;
+    transition: opacity .5s ease, transform .5s cubic-bezier(.22,.61,.36,1);
+  }
+  .screen.active {
+    opacity:1; pointer-events:auto;
+    transform: none;
+  }
+  .screen:not(.active) { transform: translateY(30px); }
+
+  /* ===== START ===== */
+  #startScreen {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .planet-graphic {
+    position: relative; width: 140px; height: 140px;
+    margin: 0 auto 12px;
+  }
+  .pg-ring {
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(168,85,247,.25);
+    animation: ringSpin 8s linear infinite;
+  }
+  .pg-ring:nth-child(2) {
+    inset: -18px; border-color: rgba(96,165,250,.15);
+    animation-duration: 12s; animation-direction: reverse;
+  }
+  .pg-ring:nth-child(3) {
+    inset: -28px; border-color: rgba(52,211,153,.1);
+    animation-duration: 16s;
+  }
+  @keyframes ringSpin { to { transform:rotate(360deg); } }
+  .pg-core {
+    position: absolute; inset: 12px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #4c1d95);
+    box-shadow: 0 0 40px rgba(168,85,247,.3), inset 0 0 30px rgba(255,255,255,.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 50px; animation: corePulse 3s ease-in-out infinite;
+  }
+  @keyframes corePulse {
+    0%,100% { box-shadow:0 0 40px rgba(168,85,247,.3),inset 0 0 30px rgba(255,255,255,.1); }
+    50% { box-shadow:0 0 60px rgba(168,85,247,.5),inset 0 0 40px rgba(255,255,255,.15); }
+  }
+  .pg-dot {
+    position: absolute; width: 6px; height: 6px; border-radius: 50%;
+    background: #fbbf24; box-shadow: 0 0 8px #fbbf24;
+    animation: dotOrbit 4s linear infinite;
+  }
+  @keyframes dotOrbit {
+    0% { transform:rotate(0deg) translateX(70px) rotate(0deg); }
+    100% { transform:rotate(360deg) translateX(70px) rotate(-360deg); }
+  }
+  .mission-tag {
+    display: inline-block; padding: 4px 16px;
+    border-radius: 50px;
+    background: rgba(168,85,247,.12);
+    border: 1px solid rgba(168,85,247,.2);
+    font-size: 11px; letter-spacing: 3px; color: #c084fc;
+    font-weight: 700; margin-bottom: 12px;
+  }
+  .mission-title {
+    font-size: 28px; font-weight: 900; line-height: 1.35;
+    background: linear-gradient(135deg, #e9d5ff, #93c5fd, #6ee7b7);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    margin-bottom: 6px;
+  }
+  .mission-sub {
+    font-size: 14px; color: #94a3b8; margin-bottom: 20px; line-height: 1.6;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border-radius: 50px; border: none;
+    font-size: 17px; font-weight: 700;
+    cursor: pointer; transition: all .2s;
+    font-family: inherit;
+  }
+  .btn-launch {
+    padding: 16px 48px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+    background-size: 200% 200%;
+    color: #fff;
+    box-shadow: 0 8px 32px rgba(124,58,237,.45);
+    animation: btnShine 3s ease-in-out infinite;
+  }
+  @keyframes btnShine {
+    0%,100% { background-position:0% 50%; }
+    50% { background-position:100% 50%; }
+  }
+  .btn-launch:active { transform: scale(.94); }
+  .start-footer {
+    margin-top: 22px; font-size: 12px; color: #475569;
+    display: flex; align-items: center; gap: 4px; justify-content: center;
+  }
+
+  /* ===== QUIZ ===== */
+  #quizScreen { padding-top: 36px; }
+  .q-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .q-step {
+    font-size: 12px; color: #a78bfa; font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .q-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,.06); border: none; color: #64748b;
+    font-size: 18px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    font-family: inherit; transition: all .2s;
+  }
+  .q-close:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .progress-wrap {
+    display: flex; gap: 5px; margin-bottom: 28px;
+  }
+  .pd {
+    flex:1; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,.08);
+    transition: all .5s cubic-bezier(.4,0,.2,1);
+    position: relative; overflow: hidden;
+  }
+  .pd.done { background: #7c3aed; }
+  .pd.cur { background: #a855f7; box-shadow: 0 0 10px rgba(168,85,247,.5); }
+  .q-text {
+    font-size: 20px; font-weight: 700; line-height: 1.5;
+    margin-bottom: 28px; color: #f1f5f9; min-height: 60px;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px; border-radius: 16px;
+    background: rgba(255,255,255,.03);
+    border: 1.5px solid rgba(255,255,255,.06);
+    cursor: pointer; transition: all .25s cubic-bezier(.4,0,.2,1);
+    position: relative; overflow: hidden;
+  }
+  .opt::after {
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(135deg, rgba(124,58,237,.1), rgba(168,85,247,.05));
+    opacity:0; transition: opacity .25s;
+  }
+  .opt:active { transform: scale(.97); }
+  .opt.sel {
+    border-color: #a855f7;
+    background: rgba(124,58,237,.1);
+    box-shadow: 0 0 28px rgba(124,58,237,.12), inset 0 0 20px rgba(124,58,237,.04);
+  }
+  .opt.sel::after { opacity:1; }
+  .opt-letter {
+    flex-shrink:0; width: 34px; height: 34px;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px;
+    background: rgba(255,255,255,.06); color: #94a3b8;
+    transition: all .25s; position: relative; z-index:1;
+  }
+  .opt.sel .opt-letter {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,.4);
+  }
+  .opt-body {
+    font-size: 14.5px; line-height: 1.55; color: #cbd5e1;
+    position: relative; z-index:1; transition: color .25s;
+  }
+  .opt.sel .opt-body { color: #f1f5f9; }
+  .nav-btns {
+    display: flex; gap: 12px; margin-top: auto; padding-top: 24px;
+  }
+  .btn-back {
+    flex:1; background: transparent; color: #94a3b8;
+    border: 1px solid rgba(255,255,255,.1); border-radius: 50px;
+    padding: 14px; font-size: 15px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all .2s;
+  }
+  .btn-back:hover { border-color: rgba(255,255,255,.2); color:#fff; }
+  .btn-next {
+    flex:1; border: none; border-radius: 50px;
+    padding: 14px; font-size: 15px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff; transition: all .25s;
+  }
+  .btn-next:disabled { opacity:.25; pointer-events:none; }
+  .btn-next:not(:disabled):active { transform: scale(.95); }
+
+  /* ===== RESULT ===== */
+  #resultScreen {
+    justify-content: flex-start; align-items: center;
+    text-align: center; overflow-y: auto; padding: 28px 20px 40px;
+  }
+  .result-planet-tag {
+    display: inline-block; padding: 4px 14px; border-radius: 50px;
+    font-size: 10px; letter-spacing: 3px; font-weight: 700;
+    margin-bottom: 20px;
+  }
+  /* Identity Card */
+  .id-card {
+    width: 100%; border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    position: relative;
+  }
+  .id-card-top {
+    padding: 36px 28px 20px;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .id-card-top::before {
+    content:''; position:absolute;
+    top:-60px; right:-60px; width:180px; height:180px;
+    border-radius:50%;
+    background:rgba(255,255,255,.03);
+  }
+  .id-card-top::after {
+    content:''; position:absolute;
+    bottom:-40px; left:-40px; width:120px; height:120px;
+    border-radius:50%;
+    background:rgba(255,255,255,.02);
+  }
+  .id-badge-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin-bottom: 8px; position: relative; z-index:1;
+  }
+  .id-badge-icon {
+    font-size: 48px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+  }
+  .id-stripe {
+    width: 100%; height: 3px; margin: 0 auto;
+    opacity: .25; border: none; border-radius: 2px;
+    max-width: 200px; position: relative; z-index:1;
+  }
+  .id-planet-label {
+    font-size: 10px; letter-spacing: 5px; opacity:.45;
+    margin-top: 12px; font-weight: 700; position: relative; z-index:1;
+  }
+  .id-name {
+    font-size: 36px; font-weight: 900; margin: 4px 0 2px;
+    position: relative; z-index:1;
+  }
+  .id-role-tag {
+    font-size: 14px; font-weight: 600; opacity: .6;
+    position: relative; z-index:1;
+  }
+  .id-card-body {
+    padding: 20px 26px 28px; text-align: left; position: relative; z-index:1;
+    background: rgba(0,0,0,.25);
+  }
+  .id-section {
+    margin-bottom: 18px;
+  }
+  .id-section-label {
+    font-size: 10px; letter-spacing: 4px; color: #fff;
+    font-weight: 700; margin-bottom: 6px; text-transform: uppercase;
+  }
+  .id-section-text {
+    font-size: 13.5px; line-height: 1.75; color: #fff;
+  }
+  .id-skill {
+    display: flex; gap: 8px; margin-bottom: 6px;
+    font-size: 13px; line-height: 1.6;
+  }
+  .id-skill-icon {
+    flex-shrink: 0; font-size: 10px; opacity: .4; margin-top: 4px;
+  }
+  .id-skill-text { color: #fff; }
+  .id-inset-box {
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 16px;
+  }
+  .id-inset-label {
+    font-size: 10px; letter-spacing: 3px; color: #fff;
+    font-weight: 700; margin-bottom: 5px;
+  }
+  .id-inset-text { font-size: 13px; line-height: 1.7; color: #fff; }
+
+  .btn-retake {
+    margin-top: 24px; border-radius: 50px; padding: 13px 36px;
+    font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: all .2s; border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06); color: #fff;
+  }
+  .btn-retake:active { transform: scale(.94); opacity: .7; }
+
+  /* ===== THEME COLORS ===== */
+  /* A - Optimizer: Sapphire blue */
+  .th-a .id-card-top { background: linear-gradient(170deg, #1e3a5f 0%, #0f2335 60%, #0a1628 100%); }
+  .th-a .id-name { color: #60a5fa; }
+  .th-a .id-planet-label,.th-a .id-role-tag { color: #93c5fd; }
+  .th-a .id-stripe { background: linear-gradient(90deg, transparent, #60a5fa, transparent); }
+  .th-a .id-inset-box { background: rgba(96,165,250,.15); }
+  .th-a .id-card-body { background: rgba(30,58,95,.3); }
+  .th-a .result-planet-tag { background: rgba(96,165,250,.1); color: #60a5fa; border: 1px solid rgba(96,165,250,.2); }
+  .th-a .btn-retake { color: #60a5fa; border-color: rgba(96,165,250,.25); }
+
+  /* B - Pathfinder: Amber */
+  .th-b .id-card-top { background: linear-gradient(170deg, #7c2d12 0%, #3d1808 60%, #1a0c04 100%); }
+  .th-b .id-name { color: #fb923c; }
+  .th-b .id-planet-label,.th-b .id-role-tag { color: #fdba74; }
+  .th-b .id-stripe { background: linear-gradient(90deg, transparent, #fb923c, transparent); }
+  .th-b .id-inset-box { background: rgba(251,146,60,.15); }
+  .th-b .id-card-body { background: rgba(124,45,18,.3); }
+  .th-b .result-planet-tag { background: rgba(251,146,60,.1); color: #fb923c; border: 1px solid rgba(251,146,60,.2); }
+  .th-b .btn-retake { color: #fb923c; border-color: rgba(251,146,60,.25); }
+
+  /* C - Visionary: Amethyst */
+  .th-c .id-card-top { background: linear-gradient(170deg, #4c1d95 0%, #1e0a42 60%, #0f0524 100%); }
+  .th-c .id-name { color: #c084fc; }
+  .th-c .id-planet-label,.th-c .id-role-tag { color: #d8b4fe; }
+  .th-c .id-stripe { background: linear-gradient(90deg, transparent, #c084fc, transparent); }
+  .th-c .id-inset-box { background: rgba(192,132,252,.15); }
+  .th-c .id-card-body { background: rgba(76,29,149,.3); }
+  .th-c .result-planet-tag { background: rgba(192,132,252,.1); color: #c084fc; border: 1px solid rgba(192,132,252,.2); }
+  .th-c .btn-retake { color: #c084fc; border-color: rgba(192,132,252,.25); }
+
+  /* D - Experimenter: Emerald */
+  .th-d .id-card-top { background: linear-gradient(170deg, #064e3b 0%, #021f17 60%, #01100c 100%); }
+  .th-d .id-name { color: #34d399; }
+  .th-d .id-planet-label,.th-d .id-role-tag { color: #6ee7b7; }
+  .th-d .id-stripe { background: linear-gradient(90deg, transparent, #34d399, transparent); }
+  .th-d .id-inset-box { background: rgba(52,211,153,.15); }
+  .th-d .id-card-body { background: rgba(6,78,59,.3); }
+  .th-d .result-planet-tag { background: rgba(52,211,153,.1); color: #34d399; border: 1px solid rgba(52,211,153,.2); }
+  .th-d .btn-retake { color: #34d399; border-color: rgba(52,211,153,.25); }
+
+  /* ===== Animations ===== */
+  @keyframes cardReveal {
+    from { opacity:0; transform: translateY(40px) scale(.92); }
+    to { opacity:1; transform: translateY(0) scale(1); }
+  }
+  .card-reveal { animation: cardReveal .6s cubic-bezier(.22,.61,.36,1) forwards; }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <canvas id="starCanvas"></canvas>
+
+  <!-- ===== START ===== -->
+  <div class="screen active" id="startScreen">
+    <div class="planet-graphic">
+      <div class="pg-ring"></div>
+      <div class="pg-ring"></div>
+      <div class="pg-ring"></div>
+      <div class="pg-core">🪐</div>
+      <div class="pg-dot"></div>
+    </div>
+    <div class="mission-tag">🚀 CREATIVE PLANET</div>
+    <div class="mission-title">创意星球<br>Online 登陆计划</div>
+    <div class="mission-sub">
+      创新不是天才的专利<br>每个人都有自己独特的创新角色
+    </div>
+    <button class="btn btn-launch" onclick="startQuiz()">
+      开始登陆 ✦
+    </button>
+    <div class="start-footer">
+      <span>🕐</span> 5 道情境题 · 凭直觉作答 · 约 2 分钟
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div class="screen" id="quizScreen">
+    <div class="q-header">
+      <div class="q-step" id="qCounter"></div>
+      <button class="q-close" onclick="quitQuiz()" title="返回首页">✕</button>
+    </div>
+    <div class="progress-wrap" id="progressBar"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="nav-btns">
+      <button class="btn-back" id="btnBack" onclick="prevQuestion()">← 上一题</button>
+      <button class="btn-next" id="btnNext" disabled onclick="nextQuestion()">下一题 →</button>
+    </div>
+  </div>
+
+  <!-- ===== RESULT ===== -->
+  <div class="screen" id="resultScreen"></div>
+</div>
+
+<script>
+// ===== STARFIELD CANVAS =====
+document.addEventListener('DOMContentLoaded', function(){
+  const canvas = document.getElementById('starCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [], w, h;
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth * (window.devicePixelRatio||1);
+    h = canvas.height = canvas.offsetHeight * (window.devicePixelRatio||1);
+    initStars();
+  }
+  function initStars(){
+    stars = [];
+    const count = Math.floor(w * h / 800);
+    for(let i=0; i<count; i++){
+      stars.push({
+        x: Math.random()*w, y: Math.random()*h,
+        r: Math.random()*1.6 + .2,
+        a: Math.random(),
+        sp: Math.random()*2 + 1,
+        tw: Math.random()*Math.PI*2
+      });
+    }
+  }
+  function draw(t){
+    ctx.clearRect(0,0,w,h);
+    for(const s of stars){
+      const pulse = Math.sin(t*.001*s.sp + s.tw) * .4 + .6;
+      const alpha = s.a * pulse;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fill();
+    }
+    // Shooting star (occasional)
+    if(Math.random() < .003){
+      const sx = Math.random()*w, sy = Math.random()*h*.5;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(sx+80, sy+40);
+      ctx.strokeStyle = 'rgba(255,255,255,.6)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+  window.addEventListener('resize', resize);
+  resize();
+});
+
+// ===== QUIZ DATA =====
+const questions = [
+  {
+    text:"面对一个模糊的新问题，你第一反应是？",
+    options:[
+      {letter:"A",text:"先找过往类似案例，用成熟方法快速搭框架"},
+      {letter:"B",text:'习惯先追根溯源，确认合理性，再着手解决'},
+      {letter:"C",text:"立刻在脑中生成多个天马行空的草图或故事"},
+      {letter:"D",text:"冷静拆解条件，列出所有可行路径的利弊表"}
+    ]
+  },{
+    text:"团队陷入思维僵局时，你通常扮演什么角色？",
+    options:[
+      {letter:"A",text:"整理者——把杂乱想法归档、排序、找交集"},
+      {letter:"B",text:'挑战者——说“我们可能问错了问题”'},
+      {letter:"C",text:"幻想家——提出一个看似荒唐但有趣的极端方案"},
+      {letter:"D",text:"工程师——快速做一个最小原型去测试哪个能跑通"}
+    ]
+  },{
+    text:'你对"失败"的态度更接近？',
+    options:[
+      {letter:"A",text:"数据——说明此路不通，需要调整参数"},
+      {letter:"B",text:"燃料——越受挫越激发我找根本原因"},
+      {letter:"C",text:"素材——失败的经历是我创作的灵感来源"},
+      {letter:"D",text:"路标——告诉我离正确解法更近了一步"}
+    ]
+  },{
+    text:"你更喜欢哪种工作节奏？",
+    options:[
+      {letter:"A",text:"按计划分阶段交付，每个节点清晰可控"},
+      {letter:"B",text:"前期大量混沌探索，后期突然顿悟爆发"},
+      {letter:"C",text:"随时随性记录灵感，不受时间线约束"},
+      {letter:"D",text:"快速试错、快速迭代，以反馈驱动前进"}
+    ]
+  },{
+    text:"别人常评价你的思维特点是？",
+    options:[
+      {letter:"A",text:"靠谱、系统、善于落地"},
+      {letter:"B",text:"善于追问、敢于突破、不盲从惯例"},
+      {letter:"C",text:"有趣、跳跃、联想力丰富"},
+      {letter:"D",text:"务实、敏锐、动手能力强"}
+    ]
+  }
+];
+
+const roles = {
+  A:{
+    th:"th-a",
+    icon:"🔧",
+    planetTag:"CREATIVE PLANET · 优化轨道",
+    name:"优化师",
+    tagline:"产品的首席精调师",
+    desc:"你不追求另起炉灶，不追求推倒重来，而是让现有装备的每一处配合都更精准、更耐久。",
+    skills:[
+      {icon:"◆", text:"<b>流程织网术</b>：从混乱中快速提炼可复用的操作流程"},
+      {icon:"◆", text:"<b>落地转换器</b>：把天马行空的概念，拆成能排产的零件清单"}
+    ],
+    collabLabel:"🤝 协作暗号",
+    collabText:'<i>“给我一个想法，还你一份工单。”</i><br><br>最适合搭配 <b>创想师</b>——他负责天马行空，你负责让奇招上线。',
+    tipsLabel:"💬 TIPS",
+    tipsText:"偶尔允许自己画一幅毫无目的的涂鸦，那可能是你下一个版本升级的隐藏补丁。"
+  },
+  B:{
+    th:"th-b",
+    icon:"🧭",
+    planetTag:"CREATIVE PLANET · 探索轨道",
+    name:"探路师",
+    tagline:"团队的认知探路者",
+    desc:"你不负责加固现有路线，你负责确认前面是不是断头路。",
+    skills:[
+      {icon:"◆", text:"<b>认知探测仪</b>：定位团队默认前提里的“松动部位”"},
+      {icon:"◆", text:"<b>问题重铸师</b>：把“怎么做得更快”变成“我们到底需不需要做”"}
+    ],
+    collabLabel:"🤝 协作暗号",
+    collabText:'<i>“等等，我们的重点错了。”</i><br><br>最适合搭配 <b>实验师</b>——你画出新路线，他立刻开样机去跑一趟。',
+    tipsLabel:"💬 TIPS",
+    tipsText:"否定旧方案只算半程，画出新方案才算到站。"
+  },
+  C:{
+    th:"th-c",
+    icon:"💡",
+    planetTag:"CREATIVE PLANET · 创想轨道",
+    name:"创想师",
+    tagline:"团队的创意燃料舱",
+    desc:"别人看见边界，你看见边界外还有一整片游乐场。",
+    skills:[
+      {icon:"◆", text:"<b>跨界联想器</b>：能把咖啡机的冲煮逻辑和液压系统扯上关系"},
+      {icon:"◆", text:"<b>点子收集器</b>：手机备忘录里藏着几十个“暂时用不上但万一呢”的创意火花"}
+    ],
+    collabLabel:"🤝 协作暗号",
+    collabText:'<i>“我知道这听起来很疯，但万一呢？”</i><br><br>最适合搭配 <b>优化师</b>——他帮你找到第一个能落地的落脚点。',
+    tipsLabel:"💬 TIPS",
+    tipsText:"每次冒出新灵感时，顺手写下“这个用在哪里？这能解决什么麻烦？”——给想象力装一个小小刹车片，转弯时会更稳。"
+  },
+  D:{
+    th:"th-d",
+    icon:"🧪",
+    planetTag:"CREATIVE PLANET · 实验轨道",
+    name:"实验师",
+    tagline:"团队的快速验证引擎",
+    desc:"你不信PPT，你信“测一测、坏了再改”。",
+    skills:[
+      {icon:"◆", text:"<b>样件速造术</b>：能用现有零件、模拟软件或手板快速搭出可测试的验证模型"},
+      {icon:"◆", text:"<b>现场数据捕手</b>：能在一堆震动和噪音里精准捞出最有价值的反馈信号"}
+    ],
+    collabLabel:"🤝 协作暗号",
+    collabText:'<i>“别争了，做个东西试试。”</i><br><br>最适合搭配 <b>探路师</b>——他指方向，你负责开机试掘前进。',
+    tipsLabel:"💬 TIPS",
+    tipsText:"动手之前，思考：“什么算成功？失败了从哪个节点倒回去？”——跑得快很重要，跑在正确的标定区间里更重要。"
+  }
+};
+
+let currentQ=0, answers=new Array(5).fill(null);
+
+function $(id){return document.getElementById(id);}
+function switchScreen(from,to){
+  $(from).classList.remove('active');
+  $(to).classList.add('active');
+}
+
+function startQuiz(){
+  currentQ=0; answers=new Array(5).fill(null);
+  renderQuestion(); switchScreen('startScreen','quizScreen');
+}
+
+function quitQuiz(){
+  if(confirm('确定要退出测试吗？当前进度不会保存。')){
+    switchScreen('quizScreen','startScreen');
+  }
+}
+
+function renderProgress(){
+  const wrap=$('progressBar'); wrap.innerHTML='';
+  for(let i=0;i<5;i++){
+    const d=document.createElement('div'); d.className='pd';
+    if(i<currentQ) d.classList.add('done');
+    if(i===currentQ) d.classList.add('cur');
+    wrap.appendChild(d);
+  }
+}
+
+function renderQuestion(){
+  renderProgress();
+  const q=questions[currentQ];
+  $('qCounter').textContent='STEP '+(currentQ+1)+' / 5';
+  $('qText').textContent=q.text;
+  $('btnBack').style.visibility=currentQ===0?'hidden':'visible';
+  const wrap=$('optionsWrap'); wrap.innerHTML='';
+  q.options.forEach((opt,idx)=>{
+    const div=document.createElement('div');
+    div.className='opt'+(answers[currentQ]===idx?' sel':'');
+    div.innerHTML='<div class="opt-letter">'+opt.letter+'</div><div class="opt-body">'+opt.text+'</div>';
+    div.onclick=()=>selectOption(idx);
+    wrap.appendChild(div);
+  });
+  updateNextBtn();
+}
+
+function selectOption(idx){
+  answers[currentQ]=idx;
+  document.querySelectorAll('#optionsWrap .opt').forEach((o,i)=>o.classList.toggle('sel',i===idx));
+  updateNextBtn();
+}
+
+function updateNextBtn(){
+  const btn=$('btnNext');
+  btn.disabled=answers[currentQ]===null;
+  btn.textContent=currentQ===4?'解锁身份卡 ✨':'下一题 →';
+}
+
+function prevQuestion(){ if(currentQ>0){currentQ--;renderQuestion();} }
+function nextQuestion(){
+  if(answers[currentQ]===null) return;
+  if(currentQ<4){currentQ++;renderQuestion();}
+  else showResult();
+}
+
+function showResult(){
+  const counts={A:0,B:0,C:0,D:0};
+  answers.forEach((ai,qi)=>{if(ai!==null) counts[questions[qi].options[ai].letter]++;});
+  const max=Math.max(...Object.values(counts));
+  const winner=Object.entries(counts).filter(([,c])=>c===max).map(([l])=>l)[0];
+  const r=roles[winner];
+
+  const screen=$('resultScreen');
+  screen.className='screen active '+r.th;
+  screen.scrollTop=0;
+
+  screen.innerHTML=`
+    <div class="result-planet-tag">${r.planetTag}</div>
+    <div class="id-card ${r.th} card-reveal">
+      <div class="id-card-top">
+        <div class="id-badge-row">
+          <div class="id-badge-icon">${r.icon}</div>
+        </div>
+        <div class="id-stripe"></div>
+        <div class="id-planet-label">🪪 创新身份卡</div>
+        <div class="id-name">${r.name}</div>
+        <div class="id-role-tag">${r.tagline}</div>
+      </div>
+      <div class="id-card-body">
+        <div class="id-section">
+          <div class="id-section-label">📍 角色定位</div>
+          <div class="id-section-text">${r.desc}</div>
+        </div>
+        <div class="id-section">
+          <div class="id-section-label">⚙️ 核心技能</div>
+          ${r.skills.map(s=>`
+            <div class="id-skill">
+              <span class="id-skill-icon">${s.icon}</span>
+              <span class="id-skill-text">${s.text}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="id-inset-box">
+          <div class="id-inset-label">${r.collabLabel}</div>
+          <div class="id-inset-text">${r.collabText}</div>
+        </div>
+        <div class="id-inset-box">
+          <div class="id-inset-label">${r.tipsLabel}</div>
+          <div class="id-inset-text">${r.tipsText}</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-retake" onclick="retake()">🔄 重新登陆</button>
+  `;
+  switchScreen('quizScreen','resultScreen');
+}
+
+function retake(){ switchScreen('resultScreen','startScreen'); }
+</script>
+</body>
+</html>
