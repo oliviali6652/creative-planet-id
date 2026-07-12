@@ -19,8 +19,8 @@
   }
   .app {
     width: 100%; max-width: 420px;
-    min-height: 100vh; min-height: 100dvh;
-    position: relative;
+    height: 100vh; height: 100dvh;
+    position: relative; overflow: hidden;
   }
 
   /* ===== Canvas Background ===== */
@@ -35,16 +35,13 @@
     padding: 44px 24px 48px;
     opacity:0; pointer-events:none;
     transition: opacity .5s ease, transform .5s cubic-bezier(.22,.61,.36,1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
   .screen.active {
     opacity:1; pointer-events:auto;
     transform: none;
-  }
-  #resultScreen.active {
-    position: relative;
-    height: auto;
-    min-height: 100vh;
-    min-height: 100dvh;
   }
   .screen:not(.active) { transform: translateY(30px); }
 
@@ -226,9 +223,7 @@
   /* ===== RESULT ===== */
   #resultScreen {
     justify-content: flex-start; align-items: center;
-    text-align: center; overflow-y: auto; overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    padding: 28px 20px 60px;
+    text-align: center; padding: 28px 20px 60px;
   }
   .result-planet-tag {
     display: inline-block; padding: 4px 14px; border-radius: 50px;
