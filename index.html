@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>创意星球 · 创新身份卡解锁</title>
+<title>创新星球 · 创新身份卡解锁</title>
 <style>
   :root {
-    --bg-deep: #060918;
+    --bg-deep: #F5F8FC;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: var(--bg-deep);
-    color: #fff;
+    background: #F5F8FC;
+    color: #001A33;
     min-height: 100vh; min-height: 100dvh;
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
@@ -55,28 +55,28 @@
   .pg-ring {
     position: absolute; inset: -8px;
     border-radius: 50%;
-    border: 1.5px solid rgba(168,85,247,.25);
+    border: 1.5px solid rgba(0,26,51,.2);
     animation: ringSpin 8s linear infinite;
   }
   .pg-ring:nth-child(2) {
-    inset: -18px; border-color: rgba(96,165,250,.15);
+    inset: -18px; border-color: rgba(244,121,32,.1);
     animation-duration: 12s; animation-direction: reverse;
   }
   .pg-ring:nth-child(3) {
-    inset: -28px; border-color: rgba(52,211,153,.1);
+    inset: -28px; border-color: rgba(0,26,51,.08);
     animation-duration: 16s;
   }
   @keyframes ringSpin { to { transform:rotate(360deg); } }
   .pg-core {
     position: absolute; inset: 12px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #4c1d95);
-    box-shadow: 0 0 40px rgba(168,85,247,.3), inset 0 0 30px rgba(255,255,255,.1);
+    background: radial-gradient(circle at 35% 30%, #334D66, #001A33 50%, #000D1A);
+    box-shadow: 0 0 40px rgba(168,85,247,.3), inset 0 0 30px rgba(0,26,51,.1);
     display: flex; align-items: center; justify-content: center;
     font-size: 50px; animation: corePulse 3s ease-in-out infinite;
   }
   @keyframes corePulse {
-    0%,100% { box-shadow:0 0 40px rgba(168,85,247,.3),inset 0 0 30px rgba(255,255,255,.1); }
-    50% { box-shadow:0 0 60px rgba(168,85,247,.5),inset 0 0 40px rgba(255,255,255,.15); }
+    0%,100% { box-shadow:0 0 40px rgba(168,85,247,.3),inset 0 0 30px rgba(0,26,51,.1); }
+    50% { box-shadow:0 0 60px rgba(168,85,247,.5),inset 0 0 40px rgba(0,26,51,.15); }
   }
   .pg-dot {
     position: absolute; width: 6px; height: 6px; border-radius: 50%;
@@ -90,19 +90,19 @@
   .mission-tag {
     display: inline-block; padding: 4px 16px;
     border-radius: 50px;
-    background: rgba(168,85,247,.12);
-    border: 1px solid rgba(168,85,247,.2);
-    font-size: 11px; letter-spacing: 3px; color: #c084fc;
+    background: rgba(0,26,51,.1);
+    border: 1px solid rgba(0,26,51,.2);
+    font-size: 11px; letter-spacing: 3px; color: #001A33;
     font-weight: 700; margin-bottom: 12px;
   }
   .mission-title {
     font-size: 28px; font-weight: 900; line-height: 1.35;
-    background: linear-gradient(135deg, #e9d5ff, #93c5fd, #6ee7b7);
+    background: linear-gradient(135deg, #001A33, #334D66, #F47920);
     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     margin-bottom: 6px;
   }
   .mission-sub {
-    font-size: 14px; color: #94a3b8; margin-bottom: 20px; line-height: 1.6;
+    font-size: 14px; color: #445566; margin-bottom: 20px; line-height: 1.6;
   }
   .btn {
     display: inline-flex; align-items: center; gap: 8px;
@@ -113,10 +113,10 @@
   }
   .btn-launch {
     padding: 16px 48px;
-    background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+    background: linear-gradient(135deg, #F47920, #F69955, #F47920);
     background-size: 200% 200%;
-    color: #fff;
-    box-shadow: 0 8px 32px rgba(124,58,237,.45);
+    color: #001A33;
+    box-shadow: 0 8px 32px rgba(0,26,51,.4);
     animation: btnShine 3s ease-in-out infinite;
   }
   @keyframes btnShine {
@@ -125,7 +125,7 @@
   }
   .btn-launch:active { transform: scale(.94); }
   .start-footer {
-    margin-top: 22px; font-size: 12px; color: #475569;
+    margin-top: 22px; font-size: 12px; color: #445566;
     display: flex; align-items: center; gap: 4px; justify-content: center;
   }
 
@@ -136,85 +136,85 @@
     margin-bottom: 8px;
   }
   .q-step {
-    font-size: 12px; color: #a78bfa; font-weight: 700;
+    font-size: 12px; color: #001A33; font-weight: 700;
     letter-spacing: 1px;
   }
   .q-close {
     width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(255,255,255,.06); border: none; color: #64748b;
+    background: rgba(0,26,51,.06); border: none; color: #445566;
     font-size: 18px; cursor: pointer; display: flex;
     align-items: center; justify-content: center;
     font-family: inherit; transition: all .2s;
   }
-  .q-close:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .q-close:hover { background: rgba(0,26,51,.12); color: #001A33; }
   .progress-wrap {
     display: flex; gap: 5px; margin-bottom: 28px;
   }
   .pd {
     flex:1; height: 4px; border-radius: 2px;
-    background: rgba(255,255,255,.08);
+    background: rgba(0,26,51,.08);
     transition: all .5s cubic-bezier(.4,0,.2,1);
     position: relative; overflow: hidden;
   }
-  .pd.done { background: #7c3aed; }
-  .pd.cur { background: #a855f7; box-shadow: 0 0 10px rgba(168,85,247,.5); }
+  .pd.done { background: #001A33; }
+  .pd.cur { background: #F47920; box-shadow: 0 0 10px rgba(244,121,32,.4); }
   .q-text {
     font-size: 20px; font-weight: 700; line-height: 1.5;
-    margin-bottom: 28px; color: #f1f5f9; min-height: 60px;
+    margin-bottom: 28px; color: #001A33; min-height: 60px;
   }
   .options { display: flex; flex-direction: column; gap: 10px; }
   .opt {
     display: flex; align-items: flex-start; gap: 14px;
     padding: 16px 18px; border-radius: 16px;
-    background: rgba(255,255,255,.03);
-    border: 1.5px solid rgba(255,255,255,.06);
+    background: rgba(0,26,51,.03);
+    border: 1.5px solid rgba(0,26,51,.06);
     cursor: pointer; transition: all .25s cubic-bezier(.4,0,.2,1);
     position: relative; overflow: hidden;
   }
   .opt::after {
     content:''; position:absolute; inset:0;
-    background: linear-gradient(135deg, rgba(124,58,237,.1), rgba(168,85,247,.05));
+    background: linear-gradient(135deg, rgba(0,26,51,.08), rgba(196,18,48,.04));
     opacity:0; transition: opacity .25s;
   }
   .opt:active { transform: scale(.97); }
   .opt.sel {
-    border-color: #a855f7;
-    background: rgba(124,58,237,.1);
-    box-shadow: 0 0 28px rgba(124,58,237,.12), inset 0 0 20px rgba(124,58,237,.04);
+    border-color: #F47920;
+    background: rgba(244,121,32,.08);
+    box-shadow: 0 0 28px rgba(244,121,32,.1), inset 0 0 20px rgba(244,121,32,.03);
   }
   .opt.sel::after { opacity:1; }
   .opt-letter {
     flex-shrink:0; width: 34px; height: 34px;
     border-radius: 12px; display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 15px;
-    background: rgba(255,255,255,.06); color: #94a3b8;
+    background: rgba(0,26,51,.06); color: #445566;
     transition: all .25s; position: relative; z-index:1;
   }
   .opt.sel .opt-letter {
-    background: linear-gradient(135deg, #7c3aed, #a855f7);
-    color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,.4);
+    background: linear-gradient(135deg, #F47920, #F69955);
+    color: #001A33; box-shadow: 0 4px 12px rgba(196,18,48,.35);
   }
   .opt-body {
-    font-size: 14.5px; line-height: 1.55; color: #cbd5e1;
+    font-size: 14.5px; line-height: 1.55; color: #445566;
     position: relative; z-index:1; transition: color .25s;
   }
-  .opt.sel .opt-body { color: #f1f5f9; }
+  .opt.sel .opt-body { color: #001A33; }
   .nav-btns {
     display: flex; gap: 12px; margin-top: auto; padding-top: 24px;
   }
   .btn-back {
-    flex:1; background: transparent; color: #94a3b8;
-    border: 1px solid rgba(255,255,255,.1); border-radius: 50px;
+    flex:1; background: transparent; color: #445566;
+    border: 1px solid rgba(0,26,51,.1); border-radius: 50px;
     padding: 14px; font-size: 15px; font-weight: 600;
     cursor: pointer; font-family: inherit; transition: all .2s;
   }
-  .btn-back:hover { border-color: rgba(255,255,255,.2); color:#fff; }
+  .btn-back:hover { border-color: rgba(0,26,51,.2); color:#fff; }
   .btn-next {
     flex:1; border: none; border-radius: 50px;
     padding: 14px; font-size: 15px; font-weight: 700;
     cursor: pointer; font-family: inherit;
-    background: linear-gradient(135deg, #7c3aed, #a855f7);
-    color: #fff; transition: all .25s;
+    background: linear-gradient(135deg, #F47920, #F69955);
+    color: #001A33; transition: all .25s;
   }
   .btn-next:disabled { opacity:.25; pointer-events:none; }
   .btn-next:not(:disabled):active { transform: scale(.95); }
@@ -244,13 +244,13 @@
     content:''; position:absolute;
     top:-60px; right:-60px; width:180px; height:180px;
     border-radius:50%;
-    background:rgba(255,255,255,.03);
+    background:rgba(0,26,51,.03);
   }
   .id-card-top::after {
     content:''; position:absolute;
     bottom:-40px; left:-40px; width:120px; height:120px;
     border-radius:50%;
-    background:rgba(255,255,255,.02);
+    background:rgba(0,26,51,.02);
   }
   .id-badge-row {
     display: flex; align-items: center; justify-content: center;
@@ -284,11 +284,11 @@
     margin-bottom: 18px;
   }
   .id-section-label {
-    font-size: 10px; letter-spacing: 4px; color: #fff;
+    font-size: 10px; letter-spacing: 4px; color: #001A33;
     font-weight: 700; margin-bottom: 6px; text-transform: uppercase;
   }
   .id-section-text {
-    font-size: 13.5px; line-height: 1.75; color: #fff;
+    font-size: 13.5px; line-height: 1.75; color: #001A33;
   }
   .id-skill {
     display: flex; gap: 8px; margin-bottom: 6px;
@@ -297,64 +297,64 @@
   .id-skill-icon {
     flex-shrink: 0; font-size: 10px; opacity: .4; margin-top: 4px;
   }
-  .id-skill-text { color: #fff; }
+  .id-skill-text { color: #001A33; }
   .id-inset-box {
     border-radius: 14px; padding: 14px 16px; margin-bottom: 16px;
   }
   .id-inset-label {
-    font-size: 10px; letter-spacing: 3px; color: #fff;
+    font-size: 10px; letter-spacing: 3px; color: #001A33;
     font-weight: 700; margin-bottom: 5px;
   }
-  .id-inset-text { font-size: 13px; line-height: 1.7; color: #fff; }
+  .id-inset-text { font-size: 13px; line-height: 1.7; color: #001A33; }
 
   .btn-retake {
     margin-top: 24px; border-radius: 50px; padding: 13px 36px;
     font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
-    transition: all .2s; border: 1px solid rgba(255,255,255,.15);
-    background: rgba(255,255,255,.06); color: #fff;
+    transition: all .2s; border: 1px solid rgba(0,26,51,.15);
+    background: rgba(0,26,51,.06); color: #001A33;
   }
   .btn-retake:active { transform: scale(.94); opacity: .7; }
 
   /* ===== THEME COLORS ===== */
   /* A - Optimizer: Sapphire blue */
-  .th-a .id-card-top { background: linear-gradient(170deg, #1e3a5f 0%, #0f2335 60%, #0a1628 100%); }
-  .th-a .id-name { color: #60a5fa; }
-  .th-a .id-planet-label,.th-a .id-role-tag { color: #93c5fd; }
-  .th-a .id-stripe { background: linear-gradient(90deg, transparent, #60a5fa, transparent); }
-  .th-a .id-inset-box { background: rgba(96,165,250,.15); }
-  .th-a .id-card-body { background: rgba(30,58,95,.3); }
-  .th-a .result-planet-tag { background: rgba(96,165,250,.1); color: #60a5fa; border: 1px solid rgba(96,165,250,.2); }
-  .th-a .btn-retake { color: #60a5fa; border-color: rgba(96,165,250,.25); }
+  .th-a .id-card-top { background: linear-gradient(170deg, #1A3350 0%, #001A33 60%, #000D1A 100%); }
+  .th-a .id-name { color: #F47920; }
+  .th-a .id-planet-label,.th-a .id-role-tag { color: #F69955; }
+  .th-a .id-stripe { background: linear-gradient(90deg, transparent, #F47920, transparent); }
+  .th-a .id-inset-box { background: rgba(244,121,32,.1); }
+  .th-a .id-card-body { background: rgba(0,26,51,.15); }
+  .th-a .result-planet-tag { background: rgba(0,26,51,.1); color: #001A33; border: 1px solid rgba(0,26,51,.25); }
+  .th-a .btn-retake { color: #001A33; border-color: rgba(0,26,51,.3); }
 
   /* B - Pathfinder: Amber */
-  .th-b .id-card-top { background: linear-gradient(170deg, #7c2d12 0%, #3d1808 60%, #1a0c04 100%); }
-  .th-b .id-name { color: #fb923c; }
-  .th-b .id-planet-label,.th-b .id-role-tag { color: #fdba74; }
-  .th-b .id-stripe { background: linear-gradient(90deg, transparent, #fb923c, transparent); }
-  .th-b .id-inset-box { background: rgba(251,146,60,.15); }
-  .th-b .id-card-body { background: rgba(124,45,18,.3); }
-  .th-b .result-planet-tag { background: rgba(251,146,60,.1); color: #fb923c; border: 1px solid rgba(251,146,60,.2); }
-  .th-b .btn-retake { color: #fb923c; border-color: rgba(251,146,60,.25); }
+  .th-b .id-card-top { background: linear-gradient(170deg, #F47920 0%, #CC5A10 60%, #8B3B08 100%); }
+  .th-b .id-name { color: #001A33; }
+  .th-b .id-planet-label,.th-b .id-role-tag { color: #1A3350; }
+  .th-b .id-stripe { background: linear-gradient(90deg, transparent, #F47920, transparent); }
+  .th-b .id-inset-box { background: rgba(244,121,32,.1); }
+  .th-b .id-card-body { background: rgba(244,121,32,.08); }
+  .th-b .result-planet-tag { background: rgba(244,121,32,.08); color: #F47920; border: 1px solid rgba(244,121,32,.2); }
+  .th-b .btn-retake { color: #001A33; border-color: rgba(0,26,51,.3); }
 
   /* C - Visionary: Amethyst */
-  .th-c .id-card-top { background: linear-gradient(170deg, #4c1d95 0%, #1e0a42 60%, #0f0524 100%); }
-  .th-c .id-name { color: #c084fc; }
-  .th-c .id-planet-label,.th-c .id-role-tag { color: #d8b4fe; }
-  .th-c .id-stripe { background: linear-gradient(90deg, transparent, #c084fc, transparent); }
-  .th-c .id-inset-box { background: rgba(192,132,252,.15); }
-  .th-c .id-card-body { background: rgba(76,29,149,.3); }
-  .th-c .result-planet-tag { background: rgba(192,132,252,.1); color: #c084fc; border: 1px solid rgba(192,132,252,.2); }
-  .th-c .btn-retake { color: #c084fc; border-color: rgba(192,132,252,.25); }
+  .th-c .id-card-top { background: linear-gradient(170deg, #5B21B6 0%, #3B0764 60%, #1E0238 100%); }
+  .th-c .id-name { color: #001A33; }
+  .th-c .id-planet-label,.th-c .id-role-tag { color: #F69955; }
+  .th-c .id-stripe { background: linear-gradient(90deg, transparent, #F47920, transparent); }
+  .th-c .id-inset-box { background: rgba(244,121,32,.08); }
+  .th-c .id-card-body { background: rgba(59,7,100,.15); }
+  .th-c .result-planet-tag { background: rgba(192,132,252,.1); color: #001A33; border: 1px solid rgba(192,132,252,.2); }
+  .th-c .btn-retake { color: #001A33; border-color: rgba(192,132,252,.25); }
 
   /* D - Experimenter: Emerald */
-  .th-d .id-card-top { background: linear-gradient(170deg, #064e3b 0%, #021f17 60%, #01100c 100%); }
-  .th-d .id-name { color: #34d399; }
-  .th-d .id-planet-label,.th-d .id-role-tag { color: #6ee7b7; }
-  .th-d .id-stripe { background: linear-gradient(90deg, transparent, #34d399, transparent); }
-  .th-d .id-inset-box { background: rgba(52,211,153,.15); }
-  .th-d .id-card-body { background: rgba(6,78,59,.3); }
-  .th-d .result-planet-tag { background: rgba(52,211,153,.1); color: #34d399; border: 1px solid rgba(52,211,153,.2); }
-  .th-d .btn-retake { color: #34d399; border-color: rgba(52,211,153,.25); }
+  .th-d .id-card-top { background: linear-gradient(170deg, #047857 0%, #034028 60%, #012618 100%); }
+  .th-d .id-name { color: #F47920; }
+  .th-d .id-planet-label,.th-d .id-role-tag { color: #F69955; }
+  .th-d .id-stripe { background: linear-gradient(90deg, transparent, #F47920, transparent); }
+  .th-d .id-inset-box { background: rgba(244,121,32,.08); }
+  .th-d .id-card-body { background: rgba(4,120,87,.1); }
+  .th-d .result-planet-tag { background: rgba(0,26,51,.08); color: #F47920; border: 1px solid rgba(52,211,153,.2); }
+  .th-d .btn-retake { color: #F47920; border-color: rgba(244,121,32,.3); }
 
   /* ===== Animations ===== */
   @keyframes cardReveal {
@@ -368,7 +368,7 @@
     100% { background-position: 200% center; }
   }
   .shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.03), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0,26,51,.03), transparent);
     background-size: 200% 100%;
     animation: shimmer 2s ease-in-out infinite;
   }
@@ -388,7 +388,7 @@
       <div class="pg-dot"></div>
     </div>
     <div class="mission-tag">🚀 CREATIVE PLANET</div>
-    <div class="mission-title">创意星球<br>Online 登陆计划</div>
+    <div class="mission-title">创新星球<br>Online 登陆计划</div>
     <div class="mission-sub">
       创新不是天才的专利<br>每个人都有自己独特的创新角色
     </div>
@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function(){
       const alpha = s.a * pulse;
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fillStyle = `rgba(0,26,51,${alpha})`;
       ctx.fill();
     }
     // Shooting star (occasional)
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function(){
       ctx.beginPath();
       ctx.moveTo(sx, sy);
       ctx.lineTo(sx+80, sy+40);
-      ctx.strokeStyle = 'rgba(255,255,255,.6)';
+      ctx.strokeStyle = 'rgba(0,26,51,.6)';
       ctx.lineWidth = 1;
       ctx.stroke();
     }
@@ -546,7 +546,7 @@ const roles = {
       {icon:"◆", text:"<b>问题重铸师</b>：把“怎么做得更快”变成“我们到底需不需要做”"}
     ],
     collabLabel:"🤝 协作暗号",
-    collabText:'<i>“等等，我们的重点错了。”</i><br><br>最适合搭配 <b>实验师</b>——你画出新路线，他立刻开样机去跑一趟。',
+    collabText:'<i>“等等，我们的重点错了。”</i><br><br>最适合搭配 <b>试验师</b>——你画出新路线，他立刻开样机去跑一趟。',
     tipsLabel:"💬 TIPS",
     tipsText:"否定旧方案只算半程，画出新方案才算到站。"
   },
@@ -569,8 +569,8 @@ const roles = {
   D:{
     th:"th-d",
     icon:"🧪",
-    planetTag:"CREATIVE PLANET · 实验轨道",
-    name:"实验师",
+    planetTag:"CREATIVE PLANET · 试验轨道",
+    name:"试验师",
     tagline:"团队的快速验证引擎",
     desc:"你不信PPT，你信“测一测、坏了再改”。",
     skills:[
